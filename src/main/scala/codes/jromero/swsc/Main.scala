@@ -7,6 +7,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.ws._
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream._
 
 import collection.JavaConverters._
@@ -15,6 +16,7 @@ import codes.jromero.swsc.stream.graph.Bouncer
 import org.docopt.Docopt
 
 import scala.collection.immutable
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.io.StdIn
@@ -95,7 +97,13 @@ object Main extends App {
     case r if r.response.status == StatusCodes.SwitchingProtocols =>
       println("connected!")
     case r =>
-      println(s"invalid status code returned: ${r.response.status}!")
+      println("!!! ERROR !!!")
+      println(s"expected: ${StatusCodes.SwitchingProtocols}!")
+      println("received: ")
+      println(s" \\_ status code: ${r.response.status}!")
+      val body = Await.result(Unmarshal(r.response.entity).to[String], Duration.Inf)
+      println(s" \\_ body: ${body}")
+
       System.exit(-1)
   }
 
