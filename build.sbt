@@ -2,7 +2,7 @@ name := "simple-websocket-client"
 
 organization := "codes.jromero"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.11.8"
 
